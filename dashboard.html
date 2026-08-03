@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Tracker | Dashboard</title>
+
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+    <!-- Header -->
+
+    <header class="header">
+
+    <h2>Job Tracker</h2>
+
+    <a href="{{ url_for('logout') }}" class="logout-btn">
+        Logout
+    </a>
+
+</header>
+
+
+
+    <!-- Dashboard -->
+
+    <div class="dashboard-container">
+
+        <h1>Welcome, {{ session['user_name'] }} 👋</h1>
+
+        <p class="subtitle">
+            Track and manage your job applications efficiently.
+        </p>
+
+
+
+        <!-- Top Buttons -->
+
+        <div class="top-buttons">
+
+            <a href="{{ url_for('add_application') }}" class="main-btn">
+                Add Application
+            </a>
+
+            <a href="{{ url_for('view_applications') }}" class="main-btn">
+                View Applications
+            </a>
+            
+
+        </div>
+
+
+
+        <!-- Statistics -->
+
+        <div class="card-container">
+
+            <div class="card">
+
+                <h3>Total Applications</h3>
+
+                <p>{{ total }}</p>
+
+            </div>
+
+
+
+            <div class="card">
+
+                <h3>Applied</h3>
+
+                <p>{{ applied }}</p>
+
+            </div>
+
+
+            <div class="card">
+                 <h3>Assessment</h3>
+                       <p>{{ assessment }}</p>
+            </div>
+
+
+
+            <div class="card">
+
+                <h3>Interview</h3>
+
+                <p>{{ interview }}</p>
+
+            </div>
+
+
+
+            <div class="card">
+
+                <h3>Offers</h3>
+
+                <p>{{ offer }}</p>
+
+            </div>
+
+
+
+            <div class="card">
+
+                <h3>Rejected</h3>
+
+                <p>{{ rejected }}</p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Recent Applications -->
+
+        <div class="recent-section">
+
+            <h2>Recent Applications</h2>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Company</th>
+
+                        <th>Role</th>
+
+                        <th>Status</th>
+
+                    </tr>
+
+                </thead>
+                <tbody>
+
+    {% if recent_applications %}
+
+        {% for app in recent_applications %}
+
+        <tr>
+
+            <td>{{ app.company }}</td>
+
+            <td>{{ app.role }}</td>
+
+            <td>{{ app.status }}</td>
+
+        </tr>
+
+        {% endfor %}
+
+    {% else %}
+
+        <tr>
+
+            <td colspan="3">
+
+                No applications added yet.
+
+            </td>
+
+        </tr>
+
+    {% endif %}
+
+</tbody>
+                    
+
+            </table>
+
+        </div>
+        <div class="recent-section">
+
+<h2>Upcoming Interviews</h2>
+
+<table>
+
+<tr>
+    <th>Company</th>
+    <th>Role</th>
+    <th>Date</th>
+</tr>
+
+
+{% if upcoming_interviews %}
+
+{% for app in upcoming_interviews %}
+
+<tr>
+
+<td>{{ app.company }}</td>
+
+<td>{{ app.role }}</td>
+
+<td>{{ app.interview_date }}</td>
+
+</tr>
+
+{% endfor %}
+
+{% else %}
+
+<tr>
+<td colspan="3">
+No upcoming interviews.
+</td>
+</tr>
+
+{% endif %}
+
+</table>
+
+</div>
+<div class="chart-container">
+
+    <div class="chart-card">
+        <h3>Application Status Distribution</h3>
+        <canvas id="statusChart"></canvas>
+    </div>
+
+    <div class="chart-card">
+        <h3>Applications by Status</h3>
+        <canvas id="barChart"></canvas>
+    </div>
+
+</div>
+
+
+        
+
+    </div>
+
+
+
+    <!-- Footer -->
+
+    <footer>
+
+        <p>&copy; 2026 Job Tracker. All Rights Reserved.</p>
+
+    </footer>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+const applied = {{ applied }};
+const assessment = {{ assessment }};
+const interview = {{ interview }};
+const offer = {{ offer }};
+const rejected = {{ rejected }};
+
+new Chart(document.getElementById("statusChart"), {
+    type: "pie",
+    data: {
+        labels: ["Applied", "Assessment", "Interview", "Offer", "Rejected"],
+        datasets: [{
+            data: [applied, assessment, interview, offer, rejected]
+        }]
+    }
+});
+
+new Chart(document.getElementById("barChart"), {
+    type: "bar",
+    data: {
+        labels: ["Applied", "Assessment", "Interview", "Offer", "Rejected"],
+        datasets: [{
+            label: "Applications",
+            data: [applied, assessment, interview, offer, rejected]
+        }]
+    }
+});
+
+</script>
+</body>
+
+</html>

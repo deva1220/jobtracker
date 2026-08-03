@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Application | Job Tracker</title>
+
+    <link rel="stylesheet" href="/style.css">
+
+</head>
+
+<body>
+
+    <!-- Header -->
+
+    <header class="header">
+
+        <h2>Job Tracker</h2>
+
+        <a href="{{ url_for('logout') }}" class="logout-btn">
+            Logout
+        </a>
+
+    </header>
+
+
+    <!-- Form -->
+
+    <div class="form-container">
+
+        <h1>Add Application</h1>
+
+        <p class="subtitle">
+            Save your job application details.
+        </p>
+
+        <form method="POST" 
+      action="{{ url_for('edit_application', id=application.id) }}"
+      enctype="multipart/form-data">
+
+            <label>Company Name</label>
+
+            <input
+                type="text"
+                name="company"
+                value="{{ application.company }}"
+                required
+            >
+
+
+            <label>Job Role</label>
+
+            <input
+                type="text"
+                name="role"
+                value="{{ application.role }}"
+                required
+            >
+
+
+            <label>Location</label>
+
+            <input
+                type="text"
+                name="location"
+                value="{{ application.location }}"
+            >
+
+
+           <label>Job Type</label>
+
+<select name="job_type">
+
+    <option value="Full Time" {% if application.job_type == "Full Time" %}selected{% endif %}>Full Time</option>
+
+    <option value="Internship" {% if application.job_type == "Internship" %}selected{% endif %}>Internship</option>
+
+    <option value="Part Time" {% if application.job_type == "Part Time" %}selected{% endif %}>Part Time</option>
+
+    <option value="Remote" {% if application.job_type == "Remote" %}selected{% endif %}>Remote</option>
+
+    <option value="Hybrid" {% if application.job_type == "Hybrid" %}selected{% endif %}>Hybrid</option>
+
+</select>
+
+
+            <label>Application Date</label>
+
+            <input
+                type="date"
+                name="application_date"
+                value="{{ application.application_date }}"f
+                required
+            >
+
+
+            <label>Status</label>
+
+            <select name="status" required>
+
+    <option value="Applied" {% if application.status == "Applied" %}selected{% endif %}>Applied</option>
+
+    <option value="Assessment" {% if application.status == "Assessment" %}selected{% endif %}>Assessment</option>
+
+    <option value="Interview" {% if application.status == "Interview" %}selected{% endif %}>Interview</option>
+
+    <option value="Offer" {% if application.status == "Offer" %}selected{% endif %}>Offer</option>
+
+    <option value="Rejected" {% if application.status == "Rejected" %}selected{% endif %}>Rejected</option>
+
+</select>
+
+<label>Interview Date</label>
+
+<input 
+type="date" 
+name="interview_date"
+value="{{ application.interview_date }}"
+>
+          
+<label>Job Portal</label>
+
+<select name="portal">
+
+    <option value="LinkedIn" {% if application.portal == "LinkedIn" %}selected{% endif %}>LinkedIn</option>
+
+    <option value="Naukri" {% if application.portal == "Naukri" %}selected{% endif %}>Naukri</option>
+
+    <option value="Indeed" {% if application.portal == "Indeed" %}selected{% endif %}>Indeed</option>
+
+    <option value="Company Website" {% if application.portal == "Company Website" %}selected{% endif %}>Company Website</option>
+
+    <option value="Other" {% if application.portal == "Other" %}selected{% endif %}>Other</option>
+
+</select>
+<label>Replace Resume (PDF)</label>
+
+<input 
+type="file"
+name="resume"
+accept=".pdf"
+>
+
+{% if application.resume_file %}
+<p>
+Current Resume:
+<a href="{{ url_for('uploaded_file', filename=application.resume_file) }}" target="_blank">
+    {{ application.resume_file }}
+</a>
+</p>
+{% endif %}
+
+            <label>Notes</label>
+
+            <textarea name="notes">{{ application.notes }}</textarea>
+
+
+            <button type="submit" class="save-btn">
+
+                Update Application
+
+            </button>
+
+        </form>
+
+
+        <div class="back-btn-div">
+
+            <a href="{{ url_for('dashboard') }}" class="back-btn">
+
+                Back to Dashboard
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <footer>
+
+        <p>&copy; 2026 Job Tracker. All Rights Reserved.</p>
+
+    </footer>
+
+</body>
+
+</html>

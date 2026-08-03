@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>View Applications | Job Tracker</title>
+
+    <link rel="stylesheet" href="/style.css">
+
+</head>
+
+<body>
+
+    <!-- Header -->
+
+    <header class="header">
+
+        <h2>Job Tracker</h2>
+
+        <a href="{{ url_for('logout') }}" class="logout-btn">
+            Logout
+        </a>
+
+    </header>
+
+
+    <!-- Main Content -->
+
+    <div class="dashboard-container">
+
+        <h1>My Applications</h1>
+
+        <p class="subtitle">
+            View and manage all your job applications.
+        </p>
+
+<form method="GET" action="{{ url_for('view_applications') }}" class="search-form">
+
+    <input
+        type="text"
+        name="search"
+        placeholder="Search by company or role..."
+    
+    >
+
+    <select name="status">
+
+        <option value="">All Status</option>
+
+        <option value="Applied" {% if request.args.get('status') == 'Applied' %}selected{% endif %}>Applied</option>
+
+        <option value="Assessment" {% if request.args.get('status') == 'Assessment' %}selected{% endif %}>Assessment</option>
+
+        <option value="Interview" {% if request.args.get('status') == 'Interview' %}selected{% endif %}>Interview</option>
+
+        <option value="Offer" {% if request.args.get('status') == 'Offer' %}selected{% endif %}>Offer</option>
+
+        <option value="Rejected" {% if request.args.get('status') == 'Rejected' %}selected{% endif %}>Rejected</option>
+
+    </select>
+<label>Sort By</label>
+
+<select name="sort">
+
+    <option value="">Default</option>
+
+    <option value="newest" {% if request.args.get('sort') == 'newest' %}selected{% endif %}>
+        Newest First
+    </option>
+
+    <option value="oldest" {% if request.args.get('sort') == 'oldest' %}selected{% endif %}>
+        Oldest First
+    </option>
+
+    <option value="company_asc" {% if request.args.get('sort') == 'company_asc' %}selected{% endif %}>
+        Company (A-Z)
+    </option>
+
+    <option value="company_desc" {% if request.args.get('sort') == 'company_desc' %}selected{% endif %}>
+        Company (Z-A)
+    </option>
+
+</select>
+    <button type="submit" class="main-btn">
+        Search
+    </button>
+
+</form>
+        <div class="top-buttons">
+
+            <a href="{{ url_for('dashboard') }}" class="main-btn">
+                Dashboard
+            </a>
+
+            <a href="{{ url_for('add_application') }}" class="main-btn">
+                Add Application
+            </a>
+
+        </div>
+
+
+        <div class="recent-section">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Company</th>
+                        <th>Role</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th>Job Type</th>
+                        <th>Date</th>
+                        <th>Portal</th>
+                        <th>Actions</th>
+                        <th>Resume</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% if applications %}
+
+                        {% for app in applications %}
+
+                        <tr>
+                           
+
+                            <td>{{ app.company }}</td>
+
+                            <td>{{ app.role }}</td>
+
+                            <td>{{ app.location }}</td>
+
+                            <td>{{ app.status }}</td>
+
+                             <td>{{ app.job_type }}</td>
+
+                            <td>{{ app.application_date }}</td>
+
+                            <td>{{ app.portal }}</td>
+                            <td>
+
+{% if app.resume_file %}
+
+<a href="/uploads/{{ app.resume_file }}" target="_blank">
+View Resume
+</a>
+
+{% else %}
+
+No Resume
+
+{% endif %}
+
+</td>
+
+                            <td>
+
+                                <a href="{{ url_for('edit_application', id=app.id) }}">Edit</a>
+
+                                |
+
+                                <a href="{{ url_for('delete_application', id=app.id) }}"
+                                   onclick="return confirm('Delete this application?')">
+
+                                    Delete
+
+                                </a>
+
+                            </td> 
+
+                        </tr>
+
+                        {% endfor %}
+
+                    {% else %}
+
+                        <tr>
+
+                            <td colspan="7">
+
+                                No applications added yet.
+
+                            </td>
+
+                        </tr>
+
+                    {% endif %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <footer>
+
+        <p>&copy; 2026 Job Tracker. All Rights Reserved.</p>
+
+    </footer>
+
+</body>
+
+</html>

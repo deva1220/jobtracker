@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Add Application | Job Tracker</title>
+
+    <link rel="stylesheet" href="/style.css">
+
+</head>
+
+<body>
+
+    <!-- Header -->
+
+    <header class="header">
+
+        <h2>Job Tracker</h2>
+
+        <a href="{{ url_for('logout') }}" class="logout-btn">
+            Logout
+        </a>
+
+    </header>
+
+
+    <!-- Form -->
+
+    <div class="form-container">
+
+        <h1>Add Application</h1>
+
+        <p class="subtitle">
+            Save your job application details.
+        </p>
+
+<form method="POST" action="{{ url_for('add_application') }}" enctype="multipart/form-data">
+            <label>Company Name</label>
+
+            <input
+                type="text"
+                name="company"
+                placeholder="Enter company name"
+                required
+            >
+
+
+            <label>Job Role</label>
+
+            <input
+                type="text"
+                name="role"
+                placeholder="Enter job role"
+                required
+            >
+
+
+            <label>Location</label>
+
+            <input
+                type="text"
+                name="location"
+                placeholder="Enter location"
+            >
+
+
+            <label>Job Type</label>
+
+            <select name="job_type">
+
+                <option>Full Time</option>
+                <option>Internship</option>
+                <option>Part Time</option>
+                <option>Remote</option>
+                <option>Hybrid</option>
+
+            </select>
+
+
+            <label>Application Date</label>
+
+            <input
+                type="date"
+                name="application_date"
+                required
+            >
+
+
+            <label>Status</label>
+
+            <select name="status">
+
+                <option>Applied</option>
+                <option>Assessment</option>
+                <option>Interview</option>
+                <option>Offer</option>
+                <option>Rejected</option>
+
+            </select>
+            <label>Interview Date</label>
+
+<input type="date" name="interview_date">
+
+            <label>Job Portal</label>
+
+            <select name="portal">
+
+                <option>LinkedIn</option>
+                <option>Naukri</option>
+                <option>Indeed</option>
+                <option>Company Website</option>
+                <option>Other</option>
+
+            </select>
+
+<label>Resume</label>
+
+<input 
+type="file"
+name="resume"
+accept=".pdf"
+>
+
+            <label>Notes</label>
+
+            <textarea
+                name="notes"
+                rows="5"
+                placeholder="Additional notes (optional)"
+            ></textarea>
+
+
+            <button type="submit" class="save-btn">
+
+                Save Application
+
+            </button>
+
+        </form>
+
+
+        <div class="back-btn-div">
+
+            <a href="{{ url_for('dashboard') }}" class="back-btn">
+
+                Back to Dashboard
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <footer>
+
+        <p>&copy; 2026 Job Tracker. All Rights Reserved.</p>
+
+    </footer>
+
+</body>
+
+</html>
