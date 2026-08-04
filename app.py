@@ -27,7 +27,7 @@ db.init_app(app)
 
 @app.route("/")
 def home():
-    return "Job Tracker Running"
+    return redirect(url_for("login"))
 
 
 @app.route("/register", methods=["GET", "POST"])
