@@ -1,5 +1,6 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session
+from job_fetcher import fetch_job_description
 from flask import send_from_directory
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -147,6 +148,8 @@ def add_application():
 
         company = request.form.get("company")
         role = request.form.get("role")
+        job_url = request.form.get("job_url")
+        job_description = request.form.get("job_description")
         location = request.form.get("location")
         job_type = request.form.get("job_type")
         application_date = request.form.get("application_date")
@@ -175,6 +178,8 @@ def add_application():
         new_application = Application(
             company=company,
             role=role,
+            job_url=job_url,
+            job_description=job_description,
             location=location,
             job_type=job_type,
             application_date=application_date,
@@ -264,6 +269,7 @@ def edit_application(id):
 
         application.company = request.form.get("company")
         application.role = request.form.get("role")
+        application.job_url = request.form.get("job_url")
         application.location = request.form.get("location")
         application.job_type = request.form.get("job_type")
         application.application_date = request.form.get("application_date")
@@ -317,6 +323,20 @@ def logout():
     session.clear()
 
     return redirect(url_for("login"))
+@app.route("/fetch-job", methods=["POST"])
+def fetch_job():
+    url = request.form.get("job_url")
+
+    if not url:
+        return "Job URL is required"
+
+    job_description = fetch_job_description(url)
+
+    return render_template(
+        "add_application.html",
+        job_description=job_description,
+        job_url=url
+    )
 if __name__ == "__main__":
 
     with app.app_context():

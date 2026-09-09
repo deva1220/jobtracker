@@ -35,5 +35,7 @@ class Application(db.Model):
     notes = db.Column(db.Text)
     interview_date = db.Column(db.Date)
     resume_file = db.Column(db.String(200))
+    job_url = db.Column(db.String(500))
+    job_description = db.Column(db.Text)
 
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)

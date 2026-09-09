@@ -56,6 +56,27 @@
                 placeholder="Enter job role"
                 required
             >
+            <label>Job URL</label>
+
+<input
+    type="url"
+    name="job_url"
+    value="{{ job_url or '' }}"
+    placeholder="Paste the company job URL"
+>
+
+<button type="submit" formaction="{{ url_for('fetch_job') }}">
+    Fetch Job Description
+</button>
+{% if job_description %}
+    <label>Job Description</label>
+
+    <textarea
+        name="job_description"
+        rows="15"
+        readonly
+    >{{ job_description }}</textarea>
+{% endif %}
 
 
             <label>Location</label>
