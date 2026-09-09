@@ -1,3 +1,4 @@
+import re
 import spacy
 from spacy.matcher import PhraseMatcher
 
@@ -66,7 +67,6 @@ def extract_education_requirements(text):
 
     return found
 
-import re
 
 
 def extract_experience_requirements(text):
@@ -86,6 +86,36 @@ def extract_experience_requirements(text):
         for match in matches:
             if match.lower() not in [item.lower() for item in found]:
                 found.append(match)
+
+    return found
+def extract_requirements(text):
+    requirement_keywords = [
+        "software development",
+        "software engineering",
+        "coding",
+        "code reviews",
+        "source control",
+        "version control",
+        "testing",
+        "debugging",
+        "problem solving",
+        "build processes",
+        "software development life cycle",
+        "SDLC",
+        "design and architecture",
+        "database",
+        "communication skills",
+        "teamwork",
+        "analytical skills"
+    ]
+
+    found = []
+
+    text_lower = text.lower()
+
+    for keyword in requirement_keywords:
+        if keyword.lower() in text_lower:
+            found.append(keyword)
 
     return found
 # Create matcher
@@ -111,9 +141,35 @@ def extract_skills(text):
             found_skills.append(skill)
 
     return found_skills
+def compare_job_and_resume(job_text, resume_text):
+    job_skills = extract_skills(job_text)
+    resume_skills = extract_skills(resume_text)
+
+    matched_skills = []
+    missing_skills = []
+
+    for skill in job_skills:
+        if skill.lower() in [s.lower() for s in resume_skills]:
+            matched_skills.append(skill)
+        else:
+            missing_skills.append(skill)
+
+    if len(job_skills) > 0:
+        match_score = (len(matched_skills) / len(job_skills)) * 100
+    else:
+        match_score = 0
+
+    return {
+        "job_skills": job_skills,
+        "resume_skills": resume_skills,
+        "matched_skills": matched_skills,
+        "missing_skills": missing_skills,
+        "match_score": round(match_score, 2)
+    }
 def analyze_job_description(text):
     return {
         "skills": extract_skills(text),
         "education": extract_education_requirements(text),
-        "experience": extract_experience_requirements(text)
+        "experience": extract_experience_requirements(text),
+        "requirements": extract_requirements(text)
     }

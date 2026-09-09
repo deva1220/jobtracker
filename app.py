@@ -1,6 +1,8 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session
 from job_fetcher import fetch_job_description
+from nlp_analyzer import analyze_job_description, compare_job_and_resume
+from resume_parser import extract_resume_text
 from flask import send_from_directory
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -157,24 +159,26 @@ def add_application():
         portal = request.form.get("portal")
         notes = request.form.get("notes")
         interview_date = request.form.get("interview_date") or None
+        
 
 
         # Resume upload
         resume = request.files.get("resume")
-
         resume_filename = None
-
+        resume_text = None
         if resume and resume.filename:
-            resume_filename = secure_filename(resume.filename)
-
-            resume.save(
-                os.path.join(
-                    app.config["UPLOAD_FOLDER"],
-                    resume_filename
-                )
+            resume_filename = secure_filename(resume.filename)   
+            resume_path = os.path.join(
+            app.config["UPLOAD_FOLDER"],
+            resume_filename
             )
+            resume.save(resume_path)
+            resume_text = extract_resume_text(resume_path)
+            print("===== RESUME TEXT EXTRACTED =====")
+            print(resume_text)
+            
 
-
+         
         new_application = Application(
             company=company,
             role=role,
@@ -188,6 +192,7 @@ def add_application():
             notes=notes,
             interview_date=interview_date,
             resume_file=resume_filename,
+            resume_text=resume_text,
             user_id=session["user_id"]
         )
 
@@ -323,8 +328,10 @@ def logout():
     session.clear()
 
     return redirect(url_for("login"))
+
 @app.route("/fetch-job", methods=["POST"])
 def fetch_job():
+
     url = request.form.get("job_url")
 
     if not url:
@@ -335,8 +342,85 @@ def fetch_job():
     return render_template(
         "add_application.html",
         job_description=job_description,
-        job_url=url
+        job_url=url,
+        company=request.form.get("company", ""),
+        role=request.form.get("role", ""),
+        location=request.form.get("location", ""),
+        job_type=request.form.get("job_type", "Full Time"),
+        application_date=request.form.get("application_date", ""),
+        status=request.form.get("status", "Applied"),
+        interview_date=request.form.get("interview_date", ""),
+        portal=request.form.get("portal", "LinkedIn"),
+        notes=request.form.get("notes", "")
     )
+
+@app.route("/analyze-job", methods=["POST"])
+def analyze_job():
+
+    print("===== ANALYZE JOB CALLED =====")
+
+    job_description = request.form.get("job_description")
+
+    print("Job description received:", bool(job_description))
+
+    if not job_description:
+        return "Job description is required"
+
+    analysis = analyze_job_description(job_description)
+
+    print("Analysis result:", analysis)
+
+    return render_template(
+        "add_application.html",
+        job_description=job_description,
+        analysis=analysis,
+        job_url=request.form.get("job_url", ""),
+        company=request.form.get("company", ""),
+        role=request.form.get("role", ""),
+        location=request.form.get("location", ""),
+        job_type=request.form.get("job_type", "Full Time"),
+        application_date=request.form.get("application_date", ""),
+        status=request.form.get("status", "Applied"),
+        interview_date=request.form.get("interview_date", ""),
+        portal=request.form.get("portal", "LinkedIn"),
+        notes=request.form.get("notes", "")
+    )
+@app.route("/analyze-application/<int:application_id>")
+def analyze_application(application_id):
+
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    application = Application.query.filter_by(
+        id=application_id,
+        user_id=session["user_id"]
+    ).first_or_404()
+
+    job_description = application.job_description
+    resume_text = application.resume_text
+
+    print("===== APPLICATION ANALYSIS =====")
+    print("Application ID:", application.id)
+    print("Job description available:", bool(job_description))
+    print("Resume text available:", bool(resume_text))
+    if not job_description:
+        return "Job decsription is not available"
+    if not resume_text:
+        return "Resume text is not available"
+    result=compare_job_and_resume(
+        job_description,
+        resume_text
+    )
+    print("===== MATCHING RESULT =====")
+    print("Job skills:", result["job_skills"])
+    print("Resume skills:", result["resume_skills"])
+    print("Matched skills:", result["matched_skills"])
+    print("Missing skills:", result["missing_skills"])
+    print("Match score:", result["match_score"])
+
+
+    return result
+    
 if __name__ == "__main__":
 
     with app.app_context():

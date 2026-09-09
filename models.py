@@ -37,5 +37,6 @@ class Application(db.Model):
     resume_file = db.Column(db.String(200))
     job_url = db.Column(db.String(500))
     job_description = db.Column(db.Text)
+    resume_text = db.Column(db.Text)
 
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)

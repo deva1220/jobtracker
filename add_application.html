@@ -43,6 +43,7 @@
             <input
                 type="text"
                 name="company"
+                value="{{ company or '' }}"
                 placeholder="Enter company name"
                 required
             >
@@ -53,6 +54,7 @@
             <input
                 type="text"
                 name="role"
+                value="{{ role or '' }}"
                 placeholder="Enter job role"
                 required
             >
@@ -76,6 +78,44 @@
         rows="15"
         readonly
     >{{ job_description }}</textarea>
+    <button type="submit" formaction="{{ url_for('analyze_job') }}"   formnovalidate>
+    Analyze Job
+</button>
+{% endif %}
+{% if analysis %}
+
+    <h3>Job Analysis</h3>
+
+    <h4>Skills</h4>
+
+    <ul>
+        {% for skill in analysis.skills %}
+            <li>{{ skill }}</li>
+        {% endfor %}
+    </ul>
+
+    <h4>Education</h4>
+
+    <ul>
+        {% for item in analysis.education %}
+            <li>{{ item }}</li>
+        {% endfor %}
+    </ul>
+
+    <h4>Experience</h4>
+
+    <ul>
+        {% for item in analysis.experience %}
+            <li>{{ item }}</li>
+        {% endfor %}
+    </ul>
+    <h4>Requirements</h4>
+<ul>
+    {% for item in analysis.requirements %}
+        <li>{{ item }}</li>
+    {% endfor %}
+</ul>
+
 {% endif %}
 
 
@@ -84,21 +124,21 @@
             <input
                 type="text"
                 name="location"
+                value="{{ location or '' }}"
                 placeholder="Enter location"
             >
 
 
             <label>Job Type</label>
+<select name="job_type">
 
-            <select name="job_type">
+    <option value="Full Time" {% if job_type == "Full Time" %}selected{% endif %}>Full Time</option>
+    <option value="Internship" {% if job_type == "Internship" %}selected{% endif %}>Internship</option>
+    <option value="Part Time" {% if job_type == "Part Time" %}selected{% endif %}>Part Time</option>
+    <option value="Remote" {% if job_type == "Remote" %}selected{% endif %}>Remote</option>
+    <option value="Hybrid" {% if job_type == "Hybrid" %}selected{% endif %}>Hybrid</option>
 
-                <option>Full Time</option>
-                <option>Internship</option>
-                <option>Part Time</option>
-                <option>Remote</option>
-                <option>Hybrid</option>
-
-            </select>
+</select>
 
 
             <label>Application Date</label>
@@ -106,6 +146,7 @@
             <input
                 type="date"
                 name="application_date"
+                value="{{ application_date or '' }}"
                 required
             >
 
@@ -114,28 +155,28 @@
 
             <select name="status">
 
-                <option>Applied</option>
-                <option>Assessment</option>
-                <option>Interview</option>
-                <option>Offer</option>
-                <option>Rejected</option>
+    <option value="Applied" {% if status == "Applied" %}selected{% endif %}>Applied</option>
+    <option value="Assessment" {% if status == "Assessment" %}selected{% endif %}>Assessment</option>
+    <option value="Interview" {% if status == "Interview" %}selected{% endif %}>Interview</option>
+    <option value="Offer" {% if status == "Offer" %}selected{% endif %}>Offer</option>
+    <option value="Rejected" {% if status == "Rejected" %}selected{% endif %}>Rejected</option>
 
-            </select>
+</select>
             <label>Interview Date</label>
 
-<input type="date" name="interview_date">
+<input type="date" name="interview_date"  value="{{ interview_date or '' }}">
 
             <label>Job Portal</label>
 
             <select name="portal">
 
-                <option>LinkedIn</option>
-                <option>Naukri</option>
-                <option>Indeed</option>
-                <option>Company Website</option>
-                <option>Other</option>
+    <option value="LinkedIn" {% if portal == "LinkedIn" %}selected{% endif %}>LinkedIn</option>
+    <option value="Naukri" {% if portal == "Naukri" %}selected{% endif %}>Naukri</option>
+    <option value="Indeed" {% if portal == "Indeed" %}selected{% endif %}>Indeed</option>
+    <option value="Company Website" {% if portal == "Company Website" %}selected{% endif %}>Company Website</option>
+    <option value="Other" {% if portal == "Other" %}selected{% endif %}>Other</option>
 
-            </select>
+</select>
 
 <label>Resume</label>
 
@@ -148,10 +189,10 @@ accept=".pdf"
             <label>Notes</label>
 
             <textarea
-                name="notes"
-                rows="5"
-                placeholder="Additional notes (optional)"
-            ></textarea>
+    name="notes"
+    rows="5"
+    placeholder="Additional notes (optional)"
+>{{ notes or '' }}</textarea>
 
 
             <button type="submit" class="save-btn">
