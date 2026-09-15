@@ -1,7 +1,8 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session
 from job_fetcher import fetch_job_description
-from nlp_analyzer import analyze_job_description, compare_job_and_resume
+from nlp_analyzer import analyze_job_description, extract_skills
+from semantic_matcher import semantic_skill_match
 from resume_parser import extract_resume_text
 from flask import send_from_directory
 from werkzeug.utils import secure_filename
@@ -399,27 +400,35 @@ def analyze_application(application_id):
     job_description = application.job_description
     resume_text = application.resume_text
 
-    print("===== APPLICATION ANALYSIS =====")
-    print("Application ID:", application.id)
-    print("Job description available:", bool(job_description))
-    print("Resume text available:", bool(resume_text))
     if not job_description:
-        return "Job decsription is not available"
+        return "Job description is not available"
+
     if not resume_text:
         return "Resume text is not available"
-    result=compare_job_and_resume(
-        job_description,
-        resume_text
+
+    # Extract skills from job and resume
+    job_skills = extract_skills(job_description)
+    resume_skills = extract_skills(resume_text)
+
+    # Semantic matching
+    result = semantic_skill_match(
+        job_skills,
+        resume_skills
     )
-    print("===== MATCHING RESULT =====")
-    print("Job skills:", result["job_skills"])
-    print("Resume skills:", result["resume_skills"])
+
+    print("===== SEMANTIC MATCHING RESULT =====")
+    print("Job skills:", job_skills)
+    print("Resume skills:", resume_skills)
     print("Matched skills:", result["matched_skills"])
     print("Missing skills:", result["missing_skills"])
     print("Match score:", result["match_score"])
 
+    return render_template(
+    "match_result.html",
+    application=application,
+    result=result
+)
 
-    return result
     
 if __name__ == "__main__":
 

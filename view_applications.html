@@ -119,6 +119,7 @@
                         <th>Portal</th>
                         <th>Actions</th>
                         <th>Resume</th>
+                        <th>Analysis</th>
 
                     </tr>
 
@@ -157,6 +158,21 @@ View Resume
 {% else %}
 
 No Resume
+
+{% endif %}
+
+</td>
+<td>
+
+{% if app.job_description and app.resume_text %}
+
+<a href="{{ url_for('analyze_application', application_id=app.id) }}">
+Analyze Resume
+</a>
+
+{% else %}
+
+Not Available
 
 {% endif %}
 

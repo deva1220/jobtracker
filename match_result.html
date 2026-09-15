@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Match Analysis</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+    <header class="header">
+        <h2>Job Tracker</h2>
+        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+    </header>
+
+    <div class="form-container">
+
+        <h1>Job Match Analysis</h1>
+
+        <p class="subtitle">
+            {{ application.company }} - {{ application.role }}
+        </p>
+
+        <h2>Match Score</h2>
+
+        <div>
+            <h1>{{ result.match_score }}%</h1>
+        </div>
+
+        <h3>Matched Skills</h3>
+
+        <ul>
+            {% for skill in result.matched_skills %}
+                <li>✓ {{ skill }}</li>
+            {% endfor %}
+        </ul>
+
+        <h3>Missing Skills</h3>
+
+        <ul>
+            {% for skill in result.missing_skills %}
+                <li>✗ {{ skill }}</li>
+            {% endfor %}
+        </ul>
+
+        <div class="back-btn-div">
+            <a href="{{ url_for('view_applications') }}" class="back-btn">
+                Back to Applications
+            </a>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Job Tracker. All Rights Reserved.</p>
+    </footer>
+
+</body>
+
+</html>
